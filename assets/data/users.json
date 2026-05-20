@@ -1,0 +1,44 @@
+﻿[
+  {
+    "id": 1,
+    "role": "Principal",
+    "name": "Dr. P. Meenakshi Devi",
+    "email": "principal@ksrce.ac.in",
+    "phone": "9944456156",
+    "address": "K.S.R. Kalvi Nagar, Tiruchengode - 637 215",
+    "status": "Active"
+  },
+  {
+    "id": 2,
+    "role": "Dean",
+    "name": "Dr. M. Venkatesan",
+    "email": "dean@ksrce.ac.in",
+    "phone": "9944456156",
+    "department": "CSE",
+    "status": "Active"
+  },
+  {
+    "id": 3,
+    "role": "Institution",
+    "name": "K.S.R. College of Engineering",
+    "type": "Autonomous Engineering College",
+    "website": "https://www.ksrce.ac.in",
+    "email": "principal@ksrce.ac.in",
+    "phone": "04288 - 274741",
+    "address": "K.S.R. Kalvi Nagar, Tiruchengode - 637 215, Namakkal District, Tamil Nadu",
+    "established": 2001,
+    "affiliation": "Anna University, Chennai",
+    "accreditation": "NAAC A++",
+    "status": "Active"
+  },
+  {
+    "id": 4,
+    "role": "Trust",
+    "name": "Aarthi Educational and Charitable Trust",
+    "chairman": "Mr. R. Srinivasan (Chairman cum Managing Trustee)",
+    "phone": "9894955555",
+    "email": "ksrsrini@gmail.com",
+    "address": "5/492, K.S.R. Kalvi Nagar, Kuchipalayam Post, Tiruchengode - 637 215",
+    "status": "Active"
+  }
+]

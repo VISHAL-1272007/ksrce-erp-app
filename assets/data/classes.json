@@ -1,0 +1,17 @@
+﻿[
+  { "id": 1, "programCode": "CSE", "year": 1, "semester": 1, "totalStudents": 45, "classRoomId": "A101" },
+  { "id": 2, "programCode": "CSE", "year": 1, "semester": 2, "totalStudents": 45, "classRoomId": "A102" },
+  { "id": 3, "programCode": "CSE", "year": 2, "semester": 3, "totalStudents": 47, "classRoomId": "A201" },
+  { "id": 4, "programCode": "CSE", "year": 2, "semester": 4, "totalStudents": 47, "classRoomId": "A202" },
+  { "id": 5, "programCode": "CSE", "year": 3, "semester": 5, "totalStudents": 48, "classRoomId": "A301" },
+  { "id": 6, "programCode": "CSE", "year": 3, "semester": 6, "totalStudents": 48, "classRoomId": "A302" },
+  { "id": 7, "programCode": "CSE", "year": 4, "semester": 7, "totalStudents": 48, "classRoomId": "A401" },
+  { "id": 8, "programCode": "CSE", "year": 4, "semester": 8, "totalStudents": 48, "classRoomId": "A402" },
+  { "id": 9, "programCode": "ECE", "year": 1, "semester": 1, "totalStudents": 40, "classRoomId": "B101" },
+  { "id": 10, "programCode": "EEE", "year": 1, "semester": 1, "totalStudents": 38, "classRoomId": "C101" },
+  { "id": 11, "programCode": "IT", "year": 1, "semester": 1, "totalStudents": 32, "classRoomId": "D101" },
+  { "id": 12, "programCode": "MECH", "year": 1, "semester": 1, "totalStudents": 32, "classRoomId": "E101" },
+  { "id": 13, "programCode": "CE", "year": 1, "semester": 1, "totalStudents": 16, "classRoomId": "F101" },
+  { "id": 14, "programCode": "MBA", "year": 1, "semester": 1, "totalStudents": 32, "classRoomId": "G101" },
+  { "id": 15, "programCode": "MCA", "year": 1, "semester": 1, "totalStudents": 30, "classRoomId": "H101" }
+]

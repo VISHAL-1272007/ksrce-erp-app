@@ -1,0 +1,66 @@
+﻿[
+  {
+    "id": 1,
+    "programType": "B.E./B.Tech. Category I - Non-Accredited",
+    "amountPerAnnum": 50000,
+    "currency": "INR",
+    "frequency": "Annual",
+    "remarks": "All inclusive fee including tuition, admission, special, lab, computer, internet, library, sports, placement, training, maintenance and amenities fees"
+  },
+  {
+    "id": 2,
+    "programType": "B.E./B.Tech. Category I - Accredited",
+    "amountPerAnnum": 55000,
+    "currency": "INR",
+    "frequency": "Annual",
+    "remarks": "All inclusive fee including tuition, admission, special, lab, computer, internet, library, sports, placement, training, maintenance and amenities fees"
+  },
+  {
+    "id": 3,
+    "programType": "B.E./B.Tech. Category II - Non-Accredited",
+    "amountPerAnnum": 85000,
+    "currency": "INR",
+    "frequency": "Annual",
+    "remarks": "All inclusive fee including tuition, admission, special, lab, computer, internet, library, sports, placement, training, maintenance and amenities fees"
+  },
+  {
+    "id": 4,
+    "programType": "B.E./B.Tech. Category II - Accredited",
+    "amountPerAnnum": 87000,
+    "currency": "INR",
+    "frequency": "Annual",
+    "remarks": "All inclusive fee including tuition, admission, special, lab, computer, internet, library, sports, placement, training, maintenance and amenities fees"
+  },
+  {
+    "id": 5,
+    "programType": "M.E./M.Tech. Category I - Non-Accredited",
+    "amountPerSemester": 25000,
+    "currency": "INR",
+    "frequency": "Semester",
+    "remarks": "Per semester fee"
+  },
+  {
+    "id": 6,
+    "programType": "M.E./M.Tech. Category I - Accredited",
+    "amountPerSemester": 30000,
+    "currency": "INR",
+    "frequency": "Semester",
+    "remarks": "Per semester fee"
+  },
+  {
+    "id": 7,
+    "programType": "MBA Category I - Non-Accredited",
+    "amountPerSemester": 17500,
+    "currency": "INR",
+    "frequency": "Semester",
+    "remarks": "Per semester fee"
+  },
+  {
+    "id": 8,
+    "programType": "MBA Category I - Accredited",
+    "amountPerSemester": 20500,
+    "currency": "INR",
+    "frequency": "Semester",
+    "remarks": "Per semester fee"
+  }
+]

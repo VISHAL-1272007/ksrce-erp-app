@@ -1,0 +1,9 @@
+﻿[
+  { "id": 1, "centreName": "CFRD", "fullName": "Centre for Future Research and Development", "directorName": "Dr. P. Murugesan", "specialty": "Engineering Research" },
+  { "id": 2, "centreName": "IIC", "fullName": "Innovation and Incubation Centre", "directorName": "Dr. K. Lakshmi", "specialty": "AI and Innovation" },
+  { "id": 3, "centreName": "EDC", "fullName": "Entrepreneurship Development Cell", "specialty": "Startup Support" },
+  { "id": 4, "centreName": "CSIR", "fullName": "Centre for Smart Infrastructure and Research", "specialty": "Smart Infrastructure" },
+  { "id": 5, "centreName": "CyberSecurityExcellence", "fullName": "Cyber Tech Innovations Centre", "specialty": "Cybersecurity" },
+  { "id": 6, "centreName": "AIExcellence", "fullName": "Juniper AI-Driven Campus Center of Excellence", "specialty": "Artificial Intelligence" },
+  { "id": 7, "centreName": "NeurAAI", "fullName": "Neuraai Solutions Private Limited", "specialty": "AI Solutions" }
+]

@@ -1,0 +1,61 @@
+name: Firebase Hosting PR Preview
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - closed
+    branches:
+      - main
+
+concurrency:
+  group: firebase-hosting-pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        if: github.event.action != 'closed'
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        if: github.event.action != 'closed'
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Install dependencies
+        if: github.event.action != 'closed'
+        working-directory: OneDrive/Documents/projects/college
+        run: flutter pub get
+
+      - name: Build Flutter web
+        if: github.event.action != 'closed'
+        working-directory: OneDrive/Documents/projects/college
+        run: flutter build web --release --target lib/src/main.dart
+
+      - name: Deploy PR preview channel
+        if: github.event.action != 'closed'
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KSRCE_ERP }}
+          entryPoint: OneDrive/Documents/projects/college
+          projectId: ksrce-erp
+          channelId: pr-${{ github.event.pull_request.number }}
+          expires: 7d
+
+      - name: Cleanup PR preview channel on close
+        if: github.event.action == 'closed'
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KSRCE_ERP }}
+          entryPoint: OneDrive/Documents/projects/college
+          projectId: ksrce-erp
+          channelId: pr-${{ github.event.pull_request.number }}

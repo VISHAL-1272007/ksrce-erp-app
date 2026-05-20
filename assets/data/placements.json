@@ -1,0 +1,5 @@
+﻿[
+  { "id": 1, "year": "2022-2023", "overallRate": "82.4%", "totalStudents": 551, "registered": 484, "placed": 454 },
+  { "id": 2, "year": "2023-2024", "overallRate": "95.2%", "totalStudents": 743, "registered": 646, "placed": 615 },
+  { "id": 3, "year": "2024-2025", "overallRate": "78.9%", "totalStudents": 630, "registered": 479, "placed": 378 }
+]

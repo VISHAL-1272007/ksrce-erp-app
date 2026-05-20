@@ -1,0 +1,40 @@
+name: Deploy Flutter Web to Firebase Hosting
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency:
+  group: firebase-hosting-production
+  cancel-in-progress: true
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Install dependencies
+        working-directory: OneDrive/Documents/projects/college
+        run: flutter pub get
+
+      - name: Build Flutter web
+        working-directory: OneDrive/Documents/projects/college
+        run: flutter build web --release --target lib/src/main.dart
+
+      - name: Deploy to Firebase Hosting (Live)
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_KSRCE_ERP }}
+          entryPoint: OneDrive/Documents/projects/college
+          channelId: live
+          projectId: ksrce-erp
