@@ -29,7 +29,7 @@ class HodDashboardPage extends StatelessWidget {
       return Scaffold(
         backgroundColor: AppColors.background,
         body: LayoutBuilder(builder: (context, constraints) {
-          final isMobile = constraints.maxWidth < 700;
+          final isMobile = constraints.maxWidth < 950;
           return SingleChildScrollView(
             padding: EdgeInsets.all(isMobile ? 16 : 24),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -41,6 +41,29 @@ class HodDashboardPage extends StatelessWidget {
               // Stats
               _buildStatsRow(isMobile, deptFaculty.length, deptStudents.length, deptClasses.length, deptCourses.length),
               const SizedBox(height: 28),
+              
+              // 📊 Departmental Analytics Hub (NEW ADVANCED MODULE)
+              const SectionHeader(title: 'Departmental Analytics Hub', icon: Icons.insights_rounded),
+              if (isMobile) ...[
+                const AcademicPerformanceChart(),
+                const SizedBox(height: 16),
+                const GrievanceResponseTimeChart(),
+                const SizedBox(height: 16),
+                const AttendanceHeatmapChart(),
+              ] else ...[
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Expanded(flex: 3, child: AcademicPerformanceChart()),
+                    SizedBox(width: 20),
+                    Expanded(flex: 2, child: GrievanceResponseTimeChart()),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                const AttendanceHeatmapChart(),
+              ],
+              const SizedBox(height: 28),
+
               // Classes overview
               _buildClassesSection(deptClasses, ds, isMobile),
               const SizedBox(height: 28),
@@ -165,9 +188,11 @@ class HodDashboardPage extends StatelessWidget {
                   const Icon(Icons.auto_awesome_rounded, color: Color(0xFF1A365D), size: 20),
                   const SizedBox(width: 8),
                   const Expanded(child: Text('HOD Control Center', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: AppColors.textDark))),
-                  _StatusBadge(label: hasPattern ? 'Paper Pattern: Configured' : 'Paper Pattern: Not configured', color: hasPattern ? Color(0xFF10B981) : Color(0xFFF97316)),
-                  const SizedBox(width: 8),
-                  _StatusBadge(label: hasCOPO ? 'CO/PO: Available' : 'CO/PO: Missing', color: hasCOPO ? Color(0xFF10B981) : Color(0xFFF97316)),
+                ]),
+                const SizedBox(height: 8),
+                Wrap(spacing: 8, runSpacing: 8, children: [
+                  _StatusBadge(label: hasPattern ? 'Pattern: Done' : 'Pattern: Pending', color: hasPattern ? Color(0xFF10B981) : Color(0xFFF97316)),
+                  _StatusBadge(label: hasCOPO ? 'CO/PO: Seeded' : 'CO/PO: Missing', color: hasCOPO ? Color(0xFF10B981) : Color(0xFFF97316)),
                 ]),
                 const SizedBox(height: 8),
                 const Text('Manage CO/PO setup, paper pattern, and faculty mapping from here.', style: TextStyle(color: AppColors.textLight, fontSize: 13)),
@@ -376,51 +401,438 @@ class HodDashboardPage extends StatelessWidget {
   }
 }
 
-class _HodStat {
-  final String label, value;
-  final IconData icon;
-  final Color color;
-  const _HodStat(this.label, this.value, this.icon, this.color);
-}
-
-class _BannerAction {
-  final String label;
-  final IconData icon;
-  final String route;
-  final Color tone;
-  const _BannerAction(this.label, this.icon, this.route, [this.tone = const Color(0xFF1A365D)]);
-}
-
-class _PillBadge extends StatelessWidget {
-  final String label;
-  final Color color;
-  const _PillBadge({required this.label, required this.color});
+// ── CUSTOM ACADEMIC CHART (SPLINE CURVE) ────────────────
+class AcademicPerformanceChart extends StatelessWidget {
+  const AcademicPerformanceChart({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final data = [8.0, 22.0, 45.0, 30.0, 15.0];
+    final labels = ['<6.0 GPA', '6.0–7.0', '7.0–8.0', '8.0–9.0', '>9.0 GPA'];
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(color: color.withValues(alpha: 0.10), borderRadius: BorderRadius.circular(999), border: Border.all(color: color.withValues(alpha: 0.18))),
-      child: Text(label, style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.w700)),
+      padding: const EdgeInsets.all(20),
+      decoration: AppCardStyles.raised,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SectionHeader(
+            title: 'Academic performance (GPA Curve)',
+            icon: Icons.analytics,
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            height: 180,
+            width: double.infinity,
+            child: CustomPaint(
+              painter: _SplineAreaPainter(data: data, labels: labels),
+            ),
+          ),
+          const SizedBox(height: 12),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: labels.map((l) => Text(l, style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.textMuted))).toList(),
+          ),
+        ],
+      ),
     );
   }
 }
 
-class _StatusBadge extends StatelessWidget {
-  final String label;
-  final Color color;
-  const _StatusBadge({required this.label, required this.color});
+class _SplineAreaPainter extends CustomPainter {
+  final List<double> data;
+  final List<String> labels;
+
+  _SplineAreaPainter({required this.data, required this.labels});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final double padding = 20.0;
+    final double width = size.width - (padding * 2);
+    final double height = size.height - 20;
+
+    final double maxVal = 50.0; 
+    final int steps = data.length;
+    final double stepWidth = width / (steps - 1);
+
+    // Grid lines
+    final gridPaint = Paint()
+      ..color = AppColors.border
+      ..strokeWidth = 1.0
+      ..style = PaintingStyle.stroke;
+
+    for (int i = 0; i <= 4; i++) {
+      final y = padding + (height * i / 4);
+      canvas.drawLine(Offset(padding, y), Offset(padding + width, y), gridPaint);
+    }
+
+    // Map points to canvas coordinates
+    final List<Offset> points = [];
+    for (int i = 0; i < steps; i++) {
+      final x = padding + (i * stepWidth);
+      final y = padding + height - (data[i] / maxVal * height);
+      points.add(Offset(x, y));
+    }
+
+    // Draw spline area (gradient fill)
+    final path = Path();
+    path.moveTo(points.first.dx, padding + height);
+    path.lineTo(points.first.dx, points.first.dy);
+
+    for (int i = 0; i < points.length - 1; i++) {
+      final p0 = points[i];
+      final p1 = points[i + 1];
+      final controlPoint1 = Offset(p0.dx + stepWidth / 2, p0.dy);
+      final controlPoint2 = Offset(p1.dx - stepWidth / 2, p1.dy);
+      path.cubicTo(controlPoint1.dx, controlPoint1.dy, controlPoint2.dx, controlPoint2.dy, p1.dx, p1.dy);
+    }
+
+    path.lineTo(points.last.dx, padding + height);
+    path.close();
+
+    final fillPaint = Paint()
+      ..shader = LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [
+          AppColors.primary.withValues(alpha: 0.25),
+          AppColors.primary.withValues(alpha: 0.01),
+        ],
+      ).createShader(Rect.fromLTRB(padding, padding, padding + width, padding + height))
+      ..style = PaintingStyle.fill;
+
+    canvas.drawPath(path, fillPaint);
+
+    // Draw spline curve line
+    final linePath = Path();
+    linePath.moveTo(points.first.dx, points.first.dy);
+    for (int i = 0; i < points.length - 1; i++) {
+      final p0 = points[i];
+      final p1 = points[i + 1];
+      final controlPoint1 = Offset(p0.dx + stepWidth / 2, p0.dy);
+      final controlPoint2 = Offset(p1.dx - stepWidth / 2, p1.dy);
+      linePath.cubicTo(controlPoint1.dx, controlPoint1.dy, controlPoint2.dx, controlPoint2.dy, p1.dx, p1.dy);
+    }
+
+    final linePaint = Paint()
+      ..color = AppColors.primary
+      ..strokeWidth = 3.0
+      ..strokeCap = StrokeCap.round
+      ..style = PaintingStyle.stroke;
+
+    canvas.drawPath(linePath, linePaint);
+
+    // Draw point dots and values
+    final dotPaint = Paint()
+      ..color = AppColors.primary
+      ..style = PaintingStyle.fill;
+
+    final glowPaint = Paint()
+      ..color = Colors.white
+      ..style = PaintingStyle.fill;
+
+    final textPainter = TextPainter(
+      textDirection: TextDirection.ltr,
+    );
+
+    for (int i = 0; i < points.length; i++) {
+      final pt = points[i];
+      
+      canvas.drawCircle(pt, 6, dotPaint);
+      canvas.drawCircle(pt, 4, glowPaint);
+      canvas.drawCircle(pt, 2.5, dotPaint);
+
+      textPainter.text = TextSpan(
+        text: '${data[i].toInt()} std',
+        style: const TextStyle(
+          color: AppColors.textDark,
+          fontSize: 9,
+          fontWeight: FontWeight.bold,
+        ),
+      );
+      textPainter.layout();
+      textPainter.paint(canvas, Offset(pt.dx - textPainter.width / 2, pt.dy - 18));
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
+// ── CUSTOM ATTENDANCE HEATMAP ──────────────────────────
+class AttendanceHeatmapChart extends StatelessWidget {
+  const AttendanceHeatmapChart({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final List<String> years = ['CSE - Year I', 'CSE - Year II', 'CSE - Year III', 'CSE - Year IV'];
+    final List<String> weeks = ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6'];
+
+    final Map<String, List<double>> attendanceData = {
+      'CSE - Year I': [91.2, 88.5, 84.1, 79.8, 86.4, 90.0],
+      'CSE - Year II': [89.0, 87.2, 81.5, 74.0, 78.5, 83.2],
+      'CSE - Year III': [94.5, 92.0, 89.2, 85.5, 91.0, 93.4],
+      'CSE - Year IV': [85.0, 82.4, 78.0, 71.5, 73.8, 80.5],
+    };
+
+    Color getHeatmapColor(double val) {
+      if (val >= 85) return const Color(0xFF10B981); 
+      if (val >= 75) return const Color(0xFFF59E0B); 
+      return const Color(0xFFEF4444); 
+    }
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.10),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withValues(alpha: 0.12)),
+      padding: const EdgeInsets.all(20),
+      decoration: AppCardStyles.raised,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SectionHeader(
+            title: 'Section attendance heatmap',
+            icon: Icons.grid_on,
+          ),
+          const SizedBox(height: 12),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Table(
+              defaultColumnWidth: const FixedColumnWidth(115),
+              border: TableBorder.all(color: AppColors.border, width: 0.5),
+              children: [
+                TableRow(
+                  decoration: const BoxDecoration(color: Color(0xFFF9FAFB)),
+                  children: [
+                    const TableCell(
+                      verticalAlignment: TableCellVerticalAlignment.middle,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 12.0),
+                        child: Text('Class & Sec', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: AppColors.textMedium)),
+                      ),
+                    ),
+                    ...weeks.map((w) => TableCell(
+                      verticalAlignment: TableCellVerticalAlignment.middle,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          w,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: AppColors.textMedium),
+                        ),
+                      ),
+                    )),
+                  ],
+                ),
+                ...years.map((y) {
+                  final rowData = attendanceData[y]!;
+                  return TableRow(
+                    children: [
+                      TableCell(
+                        verticalAlignment: TableCellVerticalAlignment.middle,
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Text(
+                            y,
+                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: AppColors.textDark),
+                          ),
+                        ),
+                      ),
+                      ...rowData.map((val) {
+                        final cellColor = getHeatmapColor(val);
+                        return TableCell(
+                          verticalAlignment: TableCellVerticalAlignment.middle,
+                          child: Container(
+                            margin: const EdgeInsets.all(4),
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            decoration: BoxDecoration(
+                              color: cellColor.withValues(alpha: 0.08),
+                              borderRadius: BorderRadius.circular(6),
+                              border: Border.all(color: cellColor.withValues(alpha: 0.2), width: 1),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  '${val.toStringAsFixed(1)}%',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: cellColor,
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  val >= 85 ? 'Excellent' : val >= 75 ? 'Caution' : 'Critical',
+                                  style: TextStyle(
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.w600,
+                                    color: cellColor.withValues(alpha: 0.8),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }),
+                    ],
+                  );
+                }),
+              ],
+            ),
+          ),
+          const SizedBox(height: 14),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              _buildHeatmapLegend('🟢 >=85% (Good)', const Color(0xFF10B981)),
+              const SizedBox(width: 14),
+              _buildHeatmapLegend('🟡 75%–85% (Warning)', const Color(0xFFF59E0B)),
+              const SizedBox(width: 14),
+              _buildHeatmapLegend('🔴 <75% (Shortage)', const Color(0xFFEF4444)),
+            ],
+          ),
+        ],
       ),
-      child: Text(label, style: TextStyle(color: color, fontSize: 12, fontWeight: FontWeight.w700)),
+    );
+  }
+
+  Widget _buildHeatmapLegend(String text, Color color) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 10,
+          height: 10,
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.12),
+            borderRadius: BorderRadius.circular(2),
+            border: Border.all(color: color.withValues(alpha: 0.3)),
+          ),
+        ),
+        const SizedBox(width: 6),
+        Text(
+          text,
+          style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: AppColors.textMuted),
+        ),
+      ],
+    );
+  }
+}
+
+// ── CUSTOM GRIEVANCE & SUPPORT RESOLUTION CHART ──────────
+class GrievanceResponseTimeChart extends StatelessWidget {
+  const GrievanceResponseTimeChart({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final categories = [
+      {'title': 'Academic Issues', 'resolved': 12, 'pending': 1},
+      {'title': 'Facility/Labs', 'resolved': 8, 'pending': 2},
+      {'title': 'Hostel/Mess', 'resolved': 15, 'pending': 0},
+      {'title': 'General Admin', 'resolved': 5, 'pending': 1},
+    ];
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: AppCardStyles.raised,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SectionHeader(
+            title: 'Grievance resolution rates',
+            icon: Icons.feedback_outlined,
+          ),
+          const SizedBox(height: 8),
+          
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                  decoration: AppCardStyles.tinted(AppColors.secondary),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text('Resolved Rate', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.textLight)),
+                      SizedBox(height: 4),
+                      Text('91.0%', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.secondary)),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                  decoration: AppCardStyles.tinted(AppColors.primary),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text('Avg Resolution', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.textLight)),
+                      SizedBox(height: 4),
+                      Text('1.8 Days', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.primary)),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          
+          ...categories.map((c) {
+            final int res = c['resolved'] as int;
+            final int pen = c['pending'] as int;
+            final int total = res + pen;
+            final double resPercent = total > 0 ? res / total : 0;
+
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        c['title'] as String,
+                        style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 12, color: AppColors.textDark),
+                      ),
+                      Text(
+                        '$res Resolved / $pen Pending',
+                        style: const TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: AppColors.textMuted),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 5),
+                  
+                  Stack(
+                    children: [
+                      Container(
+                        height: 8,
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          color: AppColors.error.withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                      FractionallySizedBox(
+                        widthFactor: resPercent,
+                        child: Container(
+                          height: 8,
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [Color(0xFF10B981), Color(0xFF34D399)],
+                            ),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          }),
+        ],
+      ),
     );
   }
 }

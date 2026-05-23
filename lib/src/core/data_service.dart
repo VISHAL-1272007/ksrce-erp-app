@@ -45,6 +45,7 @@ class DataService extends ChangeNotifier {
   List<Map<String, dynamic>> _courseOutcomes = [];
   List<Map<String, dynamic>> _courseDiary = [];
   List<Map<String, dynamic>> _profileEditRequests = [];
+  List<Map<String, dynamic>> _questions = [];
   // RTDB subscription
   StreamSubscription? _rtdbResultsSub;
 
@@ -91,6 +92,7 @@ class DataService extends ChangeNotifier {
   List<Map<String, dynamic>> get courseOutcomes => _courseOutcomes;
   List<Map<String, dynamic>> get courseDiary => _courseDiary;
   List<Map<String, dynamic>> get profileEditRequests => _profileEditRequests;
+  List<Map<String, dynamic>> get questions => _questions;
   String? get currentUserId => _currentUserId;
   String? get currentRole => _currentRole;
   Map<String, dynamic>? get currentStudent => _currentStudent;
@@ -639,6 +641,7 @@ class DataService extends ChangeNotifier {
     _courseOutcomes = _asList(data['courseOutcomes']);
     _courseDiary = _asList(data['courseDiary']);
     _profileEditRequests = _asList(data['profileEditRequests']);
+    _questions = _asList(data['questions']);
     final settingsRaw = data['settings'];
     if (settingsRaw is List && settingsRaw.isNotEmpty) {
       _settings = Map<String, dynamic>.from(settingsRaw.first as Map);
@@ -800,6 +803,7 @@ class DataService extends ChangeNotifier {
       'courseOutcomes': _courseOutcomes,
       'courseDiary': _courseDiary,
       'profileEditRequests': _profileEditRequests,
+      'questions': _questions,
       'settings': _settings.isNotEmpty ? [_settings] : [],
     };
   }
@@ -1162,6 +1166,7 @@ class DataService extends ChangeNotifier {
     _courseOutcomes = futures[26];
     _courseDiary = futures[27];
     _profileEditRequests = futures[28];
+    _seedInitialQuestions();
   }
 
   /// Persist data: saves locally instantly, debounces cloud writes.
@@ -3445,6 +3450,325 @@ class DataService extends ChangeNotifier {
   /// Returns true if course outcomes are available in seeded data.
   bool hasCourseOutcomes() {
     return _courseOutcomes.isNotEmpty;
+  }
+
+  // ─── CENTRAL QUESTION BANK CRUD ───────────────────────
+  void addQuestion(Map<String, dynamic> q) {
+    if (q['questionId'] == null || q['questionId'].toString().isEmpty) {
+      q['questionId'] = 'QST${(_questions.length + 1).toString().padLeft(3, '0')}';
+    }
+    _questions.add(Map<String, dynamic>.from(q));
+    notifyListeners();
+  }
+
+  void deleteQuestion(String id) {
+    _questions.removeWhere((q) => q['questionId'] == id);
+    notifyListeners();
+  }
+
+  void _seedInitialQuestions() {
+    if (_questions.isNotEmpty) return;
+    
+    final List<Map<String, dynamic>> defaultQuestions = [
+      // CS6411 - Design and Analysis of Algorithms (CSE, IT)
+      {
+        'courseCode': 'CS6411',
+        'courseName': 'Design and Analysis of Algorithms',
+        'unit': 'I',
+        'maxMarks': 2,
+        'cognitiveLevel': 'K1: Remember',
+        'courseOutcome': 'CO1',
+        'questionText': 'Define asymptotic notations: Big-Oh, Big-Omega, and Big-Theta.'
+      },
+      {
+        'courseCode': 'CS6411',
+        'courseName': 'Design and Analysis of Algorithms',
+        'unit': 'I',
+        'maxMarks': 2,
+        'cognitiveLevel': 'K2: Understand',
+        'courseOutcome': 'CO1',
+        'questionText': 'Distinguish between time complexity and space complexity of an algorithm.'
+      },
+      {
+        'courseCode': 'CS6411',
+        'courseName': 'Design and Analysis of Algorithms',
+        'unit': 'I',
+        'maxMarks': 13,
+        'cognitiveLevel': 'K3: Apply',
+        'courseOutcome': 'CO1',
+        'questionText': 'Solve the following recurrence relation using Master\'s Theorem:\n1) T(n) = 4T(n/2) + n\n2) T(n) = 2T(n/2) + n log n.'
+      },
+      {
+        'courseCode': 'CS6411',
+        'courseName': 'Design and Analysis of Algorithms',
+        'unit': 'II',
+        'maxMarks': 2,
+        'cognitiveLevel': 'K1: Remember',
+        'courseOutcome': 'CO2',
+        'questionText': 'State the general principle of Divide and Conquer algorithmic paradigm.'
+      },
+      {
+        'courseCode': 'CS6411',
+        'courseName': 'Design and Analysis of Algorithms',
+        'unit': 'II',
+        'maxMarks': 2,
+        'cognitiveLevel': 'K2: Understand',
+        'courseOutcome': 'CO2',
+        'questionText': 'Explain why Quick Sort has a worst-case time complexity of O(n^2).'
+      },
+      {
+        'courseCode': 'CS6411',
+        'courseName': 'Design and Analysis of Algorithms',
+        'unit': 'II',
+        'maxMarks': 13,
+        'cognitiveLevel': 'K3: Apply',
+        'courseOutcome': 'CO2',
+        'questionText': 'Demonstrate the Merge Sort algorithm on the array [38, 27, 43, 3, 9, 82, 10]. Show the split and merge steps clearly.'
+      },
+      {
+        'courseCode': 'CS6411',
+        'courseName': 'Design and Analysis of Algorithms',
+        'unit': 'III',
+        'maxMarks': 2,
+        'cognitiveLevel': 'K2: Understand',
+        'courseOutcome': 'CO3',
+        'questionText': 'Define dynamic programming and explain the principle of optimality.'
+      },
+      {
+        'courseCode': 'CS6411',
+        'courseName': 'Design and Analysis of Algorithms',
+        'unit': 'III',
+        'maxMarks': 13,
+        'cognitiveLevel': 'K4: Analyze',
+        'courseOutcome': 'CO3',
+        'questionText': 'Construct the optimal binary search tree for the keys (A, B, C, D) with probabilities p = (0.1, 0.2, 0.4, 0.3) respectively.'
+      },
+      {
+        'courseCode': 'CS6411',
+        'courseName': 'Design and Analysis of Algorithms',
+        'unit': 'IV',
+        'maxMarks': 2,
+        'cognitiveLevel': 'K1: Remember',
+        'courseOutcome': 'CO4',
+        'questionText': 'Define the concept of backtracking and name two classic problems solved by it.'
+      },
+      {
+        'courseCode': 'CS6411',
+        'courseName': 'Design and Analysis of Algorithms',
+        'unit': 'IV',
+        'maxMarks': 13,
+        'cognitiveLevel': 'K3: Apply',
+        'courseOutcome': 'CO4',
+        'questionText': 'Apply backtracking to solve the 4-Queens problem. Illustrate the state space tree for the search.'
+      },
+      {
+        'courseCode': 'CS6411',
+        'courseName': 'Design and Analysis of Algorithms',
+        'unit': 'V',
+        'maxMarks': 2,
+        'cognitiveLevel': 'K2: Understand',
+        'courseOutcome': 'CO5',
+        'questionText': 'Define NP-Complete and NP-Hard classes with suitable Venn diagrams.'
+      },
+      {
+        'courseCode': 'CS6411',
+        'courseName': 'Design and Analysis of Algorithms',
+        'unit': 'V',
+        'maxMarks': 15,
+        'cognitiveLevel': 'K6: Create',
+        'courseOutcome': 'CO6',
+        'questionText': 'Formulate a branch and bound algorithm to solve the Traveling Salesperson Problem (TSP). Prove its optimal bounding logic with an example.'
+      },
+      
+      // CS6301 - Database Management Systems (CSE, IT)
+      {
+        'courseCode': 'CS6301',
+        'courseName': 'Database Management Systems',
+        'unit': 'I',
+        'maxMarks': 2,
+        'cognitiveLevel': 'K1: Remember',
+        'courseOutcome': 'CO1',
+        'questionText': 'State the advantages of DBMS over standard file-processing systems.'
+      },
+      {
+        'courseCode': 'CS6301',
+        'courseName': 'Database Management Systems',
+        'unit': 'I',
+        'maxMarks': 13,
+        'cognitiveLevel': 'K6: Create',
+        'courseOutcome': 'CO1',
+        'questionText': 'Design an Entity-Relationship (ER) diagram for a University Management System including Entities: Student, Course, Department, Instructor, and Exam.'
+      },
+      {
+        'courseCode': 'CS6301',
+        'courseName': 'Database Management Systems',
+        'unit': 'II',
+        'maxMarks': 2,
+        'cognitiveLevel': 'K2: Understand',
+        'courseOutcome': 'CO2',
+        'questionText': 'Explain the difference between SELECT and PROJECT operators in relational algebra.'
+      },
+      {
+        'courseCode': 'CS6301',
+        'courseName': 'Database Management Systems',
+        'unit': 'II',
+        'maxMarks': 13,
+        'cognitiveLevel': 'K3: Apply',
+        'courseOutcome': 'CO2',
+        'questionText': 'Write SQL queries for a Library Database schema: \n1) Retrieve all books written by "Arthur Conan Doyle".\n2) Count the total books issued in CSE department.'
+      },
+      {
+        'courseCode': 'CS6301',
+        'courseName': 'Database Management Systems',
+        'unit': 'III',
+        'maxMarks': 2,
+        'cognitiveLevel': 'K1: Remember',
+        'courseOutcome': 'CO3',
+        'questionText': 'State the definition of Third Normal Form (3NF) and Boyce-Codd Normal Form (BCNF).'
+      },
+      {
+        'courseCode': 'CS6301',
+        'courseName': 'Database Management Systems',
+        'unit': 'III',
+        'maxMarks': 13,
+        'cognitiveLevel': 'K4: Analyze',
+        'courseOutcome': 'CO3',
+        'questionText': 'Normalize the relation R(A, B, C, D, E) with functional dependencies F = {A -> B, C -> D, A,C -> E} to 3NF. State the primary keys for intermediate tables.'
+      },
+      {
+        'courseCode': 'CS6301',
+        'courseName': 'Database Management Systems',
+        'unit': 'IV',
+        'maxMarks': 2,
+        'cognitiveLevel': 'K2: Understand',
+        'courseOutcome': 'CO4',
+        'questionText': 'Explain ACID properties of a database transaction with examples.'
+      },
+      {
+        'courseCode': 'CS6301',
+        'courseName': 'Database Management Systems',
+        'unit': 'IV',
+        'maxMarks': 13,
+        'cognitiveLevel': 'K3: Apply',
+        'courseOutcome': 'CO4',
+        'questionText': 'Demonstrate the execution of Two-Phase Locking (2PL) protocol. Discuss how it prevents concurrency anomalies.'
+      },
+      {
+        'courseCode': 'CS6301',
+        'courseName': 'Database Management Systems',
+        'unit': 'V',
+        'maxMarks': 2,
+        'cognitiveLevel': 'K1: Remember',
+        'courseOutcome': 'CO5',
+        'questionText': 'Explain indexing. Contrast sparse indexing with dense indexing.'
+      },
+      {
+        'courseCode': 'CS6301',
+        'courseName': 'Database Management Systems',
+        'unit': 'V',
+        'maxMarks': 15,
+        'cognitiveLevel': 'K5: Evaluate',
+        'courseOutcome': 'CO6',
+        'questionText': 'Evaluate the performance of B+ Tree indexing against Hash indexing in databases with very large transactional load.'
+      },
+
+      // CS6551 - Computer Networks (CSE, IT)
+      {
+        'courseCode': 'CS6551',
+        'courseName': 'Computer Networks',
+        'unit': 'I',
+        'maxMarks': 2,
+        'cognitiveLevel': 'K1: Remember',
+        'courseOutcome': 'CO1',
+        'questionText': 'Name the seven layers of the ISO/OSI model in sequential order.'
+      },
+      {
+        'courseCode': 'CS6551',
+        'courseName': 'Computer Networks',
+        'unit': 'I',
+        'maxMarks': 13,
+        'cognitiveLevel': 'K2: Understand',
+        'courseOutcome': 'CO1',
+        'questionText': 'Compare and contrast the architectures of OSI reference model and TCP/IP protocol suite.'
+      },
+      {
+        'courseCode': 'CS6551',
+        'courseName': 'Computer Networks',
+        'unit': 'II',
+        'maxMarks': 2,
+        'cognitiveLevel': 'K1: Remember',
+        'courseOutcome': 'CO2',
+        'questionText': 'Define Hamming distance and explain its role in error-detection techniques.'
+      },
+      {
+        'courseCode': 'CS6551',
+        'courseName': 'Computer Networks',
+        'unit': 'II',
+        'maxMarks': 13,
+        'cognitiveLevel': 'K3: Apply',
+        'courseOutcome': 'CO2',
+        'questionText': 'Compute the CRC code for a message bit pattern M = [10110011] using the generator polynomial G(x) = x^4 + x + 1.'
+      },
+      {
+        'courseCode': 'CS6551',
+        'courseName': 'Computer Networks',
+        'unit': 'III',
+        'maxMarks': 2,
+        'cognitiveLevel': 'K2: Understand',
+        'courseOutcome': 'CO3',
+        'questionText': 'Explain the difference between classful addressing and classless CIDR addressing.'
+      },
+      {
+        'courseCode': 'CS6551',
+        'courseName': 'Computer Networks',
+        'unit': 'III',
+        'maxMarks': 13,
+        'cognitiveLevel': 'K4: Analyze',
+        'courseOutcome': 'CO3',
+        'questionText': 'Illustrate the working of Link State Routing (LSR) using Dijkstra\'s Algorithm on a 6-node network graph. Trace the routing table of the source node.'
+      },
+      {
+        'courseCode': 'CS6551',
+        'courseName': 'Computer Networks',
+        'unit': 'IV',
+        'maxMarks': 2,
+        'cognitiveLevel': 'K1: Remember',
+        'courseOutcome': 'CO4',
+        'questionText': 'Explain the roles of ports, sockets, and multiplexing at the Transport layer.'
+      },
+      {
+        'courseCode': 'CS6551',
+        'courseName': 'Computer Networks',
+        'unit': 'IV',
+        'maxMarks': 13,
+        'cognitiveLevel': 'K3: Apply',
+        'courseOutcome': 'CO4',
+        'questionText': 'Trace the TCP 3-way handshake process for establishing a connection. Highlight sequence and acknowledgment numbers.'
+      },
+      {
+        'courseCode': 'CS6551',
+        'courseName': 'Computer Networks',
+        'unit': 'V',
+        'maxMarks': 2,
+        'cognitiveLevel': 'K2: Understand',
+        'courseOutcome': 'CO5',
+        'questionText': 'Explain the function of Domain Name System (DNS) in mapping hostnames to IP addresses.'
+      },
+      {
+        'courseCode': 'CS6551',
+        'courseName': 'Computer Networks',
+        'unit': 'V',
+        'maxMarks': 15,
+        'cognitiveLevel': 'K5: Evaluate',
+        'courseOutcome': 'CO6',
+        'questionText': 'Critically evaluate the security vulnerabilities of HTTP, FTP, and SMTP, and explain how HTTPS and SMTPS mitigate these threats.'
+      }
+    ];
+
+    for (int i = 0; i < defaultQuestions.length; i++) {
+      defaultQuestions[i]['questionId'] = 'QST${(i + 1).toString().padLeft(3, '0')}';
+      _questions.add(defaultQuestions[i]);
+    }
   }
 
   // ─── NOTIFICATION CRUD ────────────────────────────────
