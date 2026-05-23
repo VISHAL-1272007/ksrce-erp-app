@@ -77,7 +77,6 @@ import 'features/hod/presentation/pages/hod_notifications_page.dart';
 import 'features/hod/presentation/pages/hod_settings_page.dart';
 import 'features/shared/presentation/pages/profile_edit_approvals_page.dart';
 import 'features/shared/presentation/pages/master_key_hub_page.dart';
-import 'features/shared/presentation/pages/hacker_welcome_page.dart';
 import 'features/shared/presentation/pages/file_manager_page.dart';
 
 Future<void> main() async {
@@ -203,7 +202,7 @@ final GoRouter _router = GoRouter(
   },
   routes: [
     GoRoute(
-        path: '/hacker-welcome', builder: (c, s) => const HackerWelcomePage()),
+        path: '/hacker-welcome', builder: (c, s) => const Scaffold(body: Center(child: Text('Unauthorized Access')))),
     GoRoute(path: '/', builder: (c, s) => const HomePage()),
     // Catch-all for unknown paths handled by errorBuilder below
     GoRoute(path: '/login', builder: (c, s) => const LoginPage()),
@@ -516,5 +515,5 @@ final GoRouter _router = GoRouter(
         path: '/hod/master-key',
         builder: (c, s) => _h('/hod/master-key', const MasterKeyHubPage(role: 'hod'))),
   ],
-  errorBuilder: (context, state) => const HackerWelcomePage(),
+  errorBuilder: (context, state) => const Scaffold(body: Center(child: Text('Page Not Found'))),
 );

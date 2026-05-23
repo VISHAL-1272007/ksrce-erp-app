@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../../core/data_service.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/services/notification_service.dart';
 
 class NavItem {
   final String title;
@@ -251,9 +252,44 @@ class _DashboardShellState extends State<DashboardShell> {
             color: AppColors.surfaceVariant.withValues(alpha: 0.5),
             borderRadius: BorderRadius.circular(10),
           ),
-          child: IconButton(
-            icon: const Icon(Icons.notifications_outlined, size: 20),
-            onPressed: () => context.go('/${widget.role}/notifications'),
+          child: Builder(
+            builder: (context) {
+              final ds = Provider.of<DataService>(context, listen: false);
+              final userId = ds.currentUserId ?? 'STU001';
+              return StreamBuilder<int>(
+                stream: NotificationService().getUnreadCountStream(userId),
+                builder: (context, snapshot) {
+                  final unreadCount = snapshot.data ?? 0;
+                  return Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.notifications_outlined, size: 20),
+                        onPressed: () => context.go('/${widget.role}/notifications'),
+                      ),
+                      if (unreadCount > 0)
+                        Positioned(
+                          right: 8,
+                          top: 8,
+                          child: Container(
+                            padding: const EdgeInsets.all(2),
+                            decoration: BoxDecoration(
+                              color: AppColors.error,
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            constraints: const BoxConstraints(minWidth: 12, minHeight: 12),
+                            child: Text(
+                              unreadCount > 99 ? '99+' : unreadCount.toString(),
+                              style: const TextStyle(color: Colors.white, fontSize: 8, fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                    ],
+                  );
+                }
+              );
+            }
           ),
         ),
         _buildProfileMenu(),
