@@ -836,3 +836,53 @@ class GrievanceResponseTimeChart extends StatelessWidget {
     );
   }
 }
+
+class _HodStat {
+  final String label, value;
+  final IconData icon;
+  final Color color;
+  const _HodStat(this.label, this.value, this.icon, this.color);
+}
+
+class _BannerAction {
+  final String label;
+  final IconData icon;
+  final String route;
+  final Color tone;
+  const _BannerAction(this.label, this.icon, this.route, [this.tone = const Color(0xFF1A365D)]);
+}
+
+class _PillBadge extends StatelessWidget {
+  final String label;
+  final Color color;
+  const _PillBadge({required this.label, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(color: color.withValues(alpha: 0.10), borderRadius: BorderRadius.circular(999), border: Border.all(color: color.withValues(alpha: 0.18))),
+      child: Text(label, style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.w700)),
+    );
+  }
+}
+
+class _StatusBadge extends StatelessWidget {
+  final String label;
+  final Color color;
+  const _StatusBadge({required this.label, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withValues(alpha: 0.12)),
+      ),
+      child: Text(label, style: TextStyle(color: color, fontSize: 12, fontWeight: FontWeight.w700)),
+    );
+  }
+}
+
