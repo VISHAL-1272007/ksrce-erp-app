@@ -71,9 +71,9 @@ def main():
             print(f"   Default password: {result['default_password']}")
     except urllib.error.HTTPError as e:
         body = e.read().decode("utf-8")
-        print(f"\n❌ HTTP Error {e.code}: {body}")
+        print(f"\n[ERROR] HTTP Error {e.code}: {body}")
     except Exception as ex:
-        print(f"\n❌ Error: {ex}")
+        print(f"\n[ERROR] Error: {ex}")
 
 if __name__ == "__main__":
     main()
