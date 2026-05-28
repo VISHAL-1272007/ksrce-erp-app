@@ -6,8 +6,10 @@ import models
 from database import get_db
 from passlib.context import CryptContext
 import os
+import uuid
 
-router = APIRouter(prefix="/admin/seed", tags=["Seed"])
+seed_router = APIRouter(prefix="/admin/seed", tags=["Seed"])
+admin_router = APIRouter(prefix="/admin", tags=["Admin"])
 
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 
@@ -26,7 +28,36 @@ class SeedRequest(BaseModel):
     secret: str
     students: List[StudentSeed]
 
-@router.post("")
+class CreateAdminRequest(BaseModel):
+    secret: str
+    email: str
+    password: str
+    name: str = "Admin"
+
+@admin_router.post("/create-admin")
+def create_admin(payload: CreateAdminRequest, db: Session = Depends(get_db)):
+    if payload.secret != SEED_SECRET:
+        raise HTTPException(status_code=403, detail="Invalid secret")
+    existing = db.query(models.User).filter(models.User.email == payload.email.lower()).first()
+    hashed = pwd_context.hash(payload.password)
+    if existing:
+        # Update password and ensure role is admin
+        existing.password_hash = hashed
+        existing.role = "admin"
+        db.commit()
+        return {"message": f"Admin user {payload.email} updated successfully", "action": "updated"}
+    uid = str(uuid.uuid4())
+    user = models.User(
+        id=uid,
+        email=payload.email.lower(),
+        password_hash=hashed,
+        role="admin"
+    )
+    db.add(user)
+    db.commit()
+    return {"message": f"Admin user {payload.email} created successfully", "action": "created"}
+
+@seed_router.post("")
 def seed_students(payload: SeedRequest, db: Session = Depends(get_db)):
     try:
         if payload.secret != SEED_SECRET:
