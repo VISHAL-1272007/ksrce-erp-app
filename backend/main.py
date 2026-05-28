@@ -4,6 +4,11 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from routers import auth, departments, courses, students, attendance, results, assignments, timetable, notifications, seed
+from database import Base, engine
+import models
+
+# Create tables if they do not exist
+Base.metadata.create_all(bind=engine)
 
 limiter = Limiter(key_func=get_remote_address, default_limits=["100/minute"])
 app = FastAPI(title="KSRCE ERP API")
