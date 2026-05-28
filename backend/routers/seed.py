@@ -9,7 +9,7 @@ import os
 
 router = APIRouter(prefix="/admin/seed", tags=["Seed"])
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto", bcrypt__min_rounds=12)
 
 SEED_SECRET = os.getenv("SEED_SECRET", "ksrce-seed-2024")
 
