@@ -1,0 +1,56 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+.env
+.venv
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Flutter/Dart
+.dart_tool/
+.packages
+build/
+.pub-cache/
+.pub/
+/coverage/
+*.lcov
+*.g.dart
+*.pb.dart
+*.pbenum.dart
+*.pbserver.dart
+*.pbjson.dart
+*.freezed.dart
+*.log
+
+# Mobile 
+**/android/app/src/main/google-services.json
+**/ios/Runner/GoogleService-Info.plist
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# MacOS
+.DS_Store
