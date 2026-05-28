@@ -37,9 +37,21 @@ def seed_students(payload: SeedRequest, db: Session = Depends(get_db)):
     added = []
     skipped = []
 
+    # Ensure department exists, or create one
+    dept_id = f"DEPT_{payload.students[0].department.upper().replace(' ', '_').replace('(', '').replace(')', '')}" if payload.students else "DEPT_CSE"
+    dept = db.query(models.Department).filter(models.Department.id == dept_id).first()
+    if not dept and payload.students:
+        dept = models.Department(
+            id=dept_id,
+            name=payload.students[0].department,
+            code=payload.students[0].department.upper().replace(' ', '_').replace('(', '').replace(')', '')
+        )
+        db.add(dept)
+        db.flush()
+
     for s in payload.students:
         existing_student = db.query(models.Student).filter(
-            models.Student.roll_number == s.roll_number
+            models.Student.roll_no == s.roll_number
         ).first()
         if existing_student:
             skipped.append(s.roll_number)
@@ -52,22 +64,39 @@ def seed_students(payload: SeedRequest, db: Session = Depends(get_db)):
             skipped.append(s.roll_number)
             continue
 
+        import uuid
+        uid = str(uuid.uuid4())
+        
         user = models.User(
+            id=uid,
             email=s.email.lower(),
-            full_name=s.full_name,
             password_hash=hashed_pwd,
             role="student"
         )
         db.add(user)
         db.flush()
 
+        # Parse year string (e.g. "II" -> 2)
+        year_num = 1
+        if s.year == "II":
+            year_num = 2
+        elif s.year == "III":
+            year_num = 3
+        elif s.year == "IV":
+            year_num = 4
+        elif s.year.isdigit():
+            year_num = int(s.year)
+
         student = models.Student(
-            user_id=user.id,
-            roll_number=s.roll_number,
-            department=s.department,
-            year=s.year,
-            section=s.section,
-            phone_number=s.phone or ""
+            id=s.roll_number,
+            user_id=uid,
+            roll_no=s.roll_number,
+            name=s.full_name,
+            email=s.email.lower(),
+            phone=s.phone or None,
+            department_id=dept.id,
+            year=year_num,
+            section=s.section
         )
         db.add(student)
         added.append(s.roll_number)
