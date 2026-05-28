@@ -1,0 +1,16 @@
+{
+  "rules": {
+    "_config": {
+      ".read": false,
+      ".write": false
+    },
+    "erp_data": {
+      ".read": "auth != null && root.child('users').child(auth.uid).exists()",
+      ".write": "auth != null && root.child('users').child(auth.uid).child('role').val() == 'admin'",
+      "$user_id": {
+        ".read": "auth.uid === $user_id || root.child('users').child(auth.uid).child('role').val() == 'admin'",
+        ".write": "auth.uid === $user_id || root.child('users').child(auth.uid).child('role').val() == 'admin'"
+      }
+    }
+  }
+}

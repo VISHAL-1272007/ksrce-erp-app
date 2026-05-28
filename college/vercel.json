@@ -1,0 +1,48 @@
+{
+  "version": 2,
+  "outputDirectory": "build/web",
+  "routes": [
+    {
+      "src": "/main\\.dart\\.js",
+      "headers": { "Cache-Control": "public, max-age=31536000, immutable" },
+      "continue": true
+    },
+    {
+      "src": "/canvaskit/(.*)",
+      "headers": { "Cache-Control": "public, max-age=31536000, immutable" },
+      "continue": true
+    },
+    {
+      "src": "/assets/(.*)",
+      "headers": { "Cache-Control": "public, max-age=86400, s-maxage=604800" },
+      "continue": true
+    },
+    {
+      "src": "/flutter\\.js",
+      "headers": { "Cache-Control": "public, max-age=31536000, immutable" },
+      "continue": true
+    },
+    {
+      "src": "/(.*)\\.png",
+      "headers": { "Cache-Control": "public, max-age=31536000, immutable" },
+      "continue": true
+    },
+    {
+      "src": "/index\\.html",
+      "headers": {
+        "Cache-Control": "public, max-age=0, must-revalidate",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "X-XSS-Protection": "1; mode=block"
+      },
+      "continue": true
+    },
+    { "handle": "filesystem" },
+    {
+      "src": "^/(?!$)(?!#)(?!index\\.html)(?!main\\.dart\\.js)(?!flutter\\.js)(?!flutter_bootstrap\\.js)(?!assets/)(?!canvaskit/)(?!icons/)(?!favicon\\.png)(?!manifest\\.json)(.+)",
+      "status": 308,
+      "headers": { "Location": "/#/hacker-welcome" }
+    },
+    { "src": "/(.*)", "dest": "/index.html" }
+  ]
+}

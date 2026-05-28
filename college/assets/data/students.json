@@ -1,0 +1,17 @@
+﻿[
+  {
+    "id": 1,
+    "enrollmentYear": "2025-26",
+    "totalEnrolled": 1226,
+    "byCategory": {
+      "undergraduate": { "firstYear": 1072, "laterEntry": 101, "total": 1173 },
+      "postgraduate": { "mastersDegree": 197, "total": 197 }
+    },
+    "categoryWiseDistribution_2025_26": { "OC": 993, "BCM": 41, "BC": 645, "MBC": 509, "SCA": 44, "SC": 99, "ST": 6, "total": 2337 },
+    "admissionStats": { "totalApplicationsReceived": 758, "managementQuotaAdmitted": 670, "averageEnrollmentRate": "88.4%" },
+    "placementRate_2022_23": "82.4%",
+    "placementRate_2023_24": "95.2%",
+    "placementRate_2024_25": "78.9%",
+    "source": "KSRCE Mandatory Disclosure 2025-26"
+  }
+]

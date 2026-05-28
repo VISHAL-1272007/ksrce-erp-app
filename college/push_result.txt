@@ -1,0 +1,16 @@
+[main 9c67f812] Remove all mock data and demo login for production readiness
+ Date: Sat Mar 7 12:26:40 2026 +0530
+ 10 files changed, 29 insertions(+), 65 deletions(-)
+ delete mode 100644 OneDrive/Documents/projects/college/commit_final.txt
+ delete mode 100644 OneDrive/Documents/projects/college/commit_result.txt
+ delete mode 100644 OneDrive/Documents/projects/college/commit_result2.txt
+ create mode 100644 OneDrive/Documents/projects/college/do_deploy.bat
+ delete mode 100644 OneDrive/Documents/projects/college/git_final.bat
+ delete mode 100644 OneDrive/Documents/projects/college/git_push.bat
+ delete mode 100644 OneDrive/Documents/projects/college/git_push2.bat
+ delete mode 100644 OneDrive/Documents/projects/college/git_verify.bat
+ delete mode 100644 OneDrive/Documents/projects/college/gitlog_result.txt
+ delete mode 100644 OneDrive/Documents/projects/college/run_git.bat
+=== PUSHING === 
+error: failed to push some refs to 'https://github.com/Duraib04/KSRCE-ERP.git'
+^C

@@ -1,0 +1,12 @@
+﻿[
+  {
+    "id": 1,
+    "totalFaculty": 375,
+    "byDesignation": { "professor": 95, "associateProfessor": 58, "assistantProfessor": 150, "instructors": 72 },
+    "phdQualified": 185,
+    "averageExperience": "15+ years",
+    "studentFacultyRatio": "3.27:1",
+    "certificationsInternational": true,
+    "source": "KSRCE Mandatory Disclosure 2025-26"
+  }
+]
