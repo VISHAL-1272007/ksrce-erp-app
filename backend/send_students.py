@@ -65,7 +65,7 @@ def main():
     try:
         with urllib.request.urlopen(req, timeout=60) as response:
             result = json.loads(response.read().decode("utf-8"))
-            print(f"\n✅ SUCCESS!")
+            print(f"\nSUCCESS!")
             print(f"   Added:   {result['added']} students")
             print(f"   Skipped: {result['skipped']} students (already existed)")
             print(f"   Default password: {result['default_password']}")
