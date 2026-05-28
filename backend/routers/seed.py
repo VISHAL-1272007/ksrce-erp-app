@@ -28,34 +28,44 @@ class SeedRequest(BaseModel):
     secret: str
     students: List[StudentSeed]
 
-class CreateAdminRequest(BaseModel):
+class CreateUserRequest(BaseModel):
     secret: str
     email: str
     password: str
-    name: str = "Admin"
+    role: str  # admin, faculty, student, hod
+    name: str = ""
 
-@admin_router.post("/create-admin")
-def create_admin(payload: CreateAdminRequest, db: Session = Depends(get_db)):
+def _upsert_user(payload: CreateUserRequest, db: Session):
     if payload.secret != SEED_SECRET:
         raise HTTPException(status_code=403, detail="Invalid secret")
-    existing = db.query(models.User).filter(models.User.email == payload.email.lower()).first()
+    if payload.role not in ["admin", "faculty", "student", "hod"]:
+        raise HTTPException(status_code=400, detail="role must be one of: admin, faculty, student, hod")
     hashed = pwd_context.hash(payload.password)
+    existing = db.query(models.User).filter(models.User.email == payload.email.lower()).first()
     if existing:
-        # Update password and ensure role is admin
         existing.password_hash = hashed
-        existing.role = "admin"
+        existing.role = payload.role
         db.commit()
-        return {"message": f"Admin user {payload.email} updated successfully", "action": "updated"}
+        return {"message": f"{payload.role.capitalize()} user {payload.email} updated", "action": "updated", "email": payload.email, "password": payload.password, "role": payload.role}
     uid = str(uuid.uuid4())
-    user = models.User(
-        id=uid,
-        email=payload.email.lower(),
-        password_hash=hashed,
-        role="admin"
-    )
+    user = models.User(id=uid, email=payload.email.lower(), password_hash=hashed, role=payload.role)
     db.add(user)
     db.commit()
-    return {"message": f"Admin user {payload.email} created successfully", "action": "created"}
+    return {"message": f"{payload.role.capitalize()} user {payload.email} created", "action": "created", "email": payload.email, "password": payload.password, "role": payload.role}
+
+@admin_router.post("/create-admin")
+def create_admin(payload: CreateUserRequest, db: Session = Depends(get_db)):
+    payload.role = "admin"
+    return _upsert_user(payload, db)
+
+@admin_router.post("/create-faculty")
+def create_faculty(payload: CreateUserRequest, db: Session = Depends(get_db)):
+    payload.role = "faculty"
+    return _upsert_user(payload, db)
+
+@admin_router.post("/create-user")
+def create_any_user(payload: CreateUserRequest, db: Session = Depends(get_db)):
+    return _upsert_user(payload, db)
 
 @seed_router.post("")
 def seed_students(payload: SeedRequest, db: Session = Depends(get_db)):
