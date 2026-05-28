@@ -182,7 +182,7 @@ class Notification(Base):
     sender = Column(String, nullable=True)
     is_read = Column(Integer, default=0)   # 0 = unread, 1 = read
     read_at = Column(DateTime, nullable=True)
-    metadata = Column(String, nullable=True)  # JSON string
+    extra_data = Column(String, nullable=True)  # JSON string
     timestamp = Column(DateTime, default=datetime.utcnow)
 
     # Relationships

@@ -168,7 +168,7 @@ def create_notification(db: Session, notif: schemas.NotificationCreate, creator_
         message=notif.message,
         type=notif.type,
         sender=notif.sender or creator_id,
-        metadata=notif.metadata,
+        extra_data=notif.extra_data,
     )
     db.add(db_notif)
     db.commit()

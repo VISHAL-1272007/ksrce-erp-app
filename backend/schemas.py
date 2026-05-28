@@ -177,7 +177,7 @@ class NotificationCreate(BaseModel):
     message: str
     type: str  # assignment, exam, attendance, grade, event, alert
     sender: Optional[str] = None
-    metadata: Optional[str] = None  # JSON string
+    extra_data: Optional[str] = None  # JSON string
 
 class NotificationResponse(BaseModel):
     id: str
@@ -188,7 +188,7 @@ class NotificationResponse(BaseModel):
     sender: Optional[str] = None
     is_read: bool
     read_at: Optional[datetime] = None
-    metadata: Optional[str] = None
+    extra_data: Optional[str] = None
     timestamp: datetime
 
     class Config:
