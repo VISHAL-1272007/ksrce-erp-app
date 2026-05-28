@@ -22,8 +22,7 @@ origins = [
     "http://localhost:8080",
     "http://localhost:3000",
     "http://localhost:5000",
-    # Allow the specific Flutter web port during development
-    "*" 
+    "https://ksrce-campus-erp.web.app"
 ]
 
 app.add_middleware(

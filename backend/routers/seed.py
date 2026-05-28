@@ -28,44 +28,34 @@ class SeedRequest(BaseModel):
     secret: str
     students: List[StudentSeed]
 
-class CreateUserRequest(BaseModel):
+class CreateAdminRequest(BaseModel):
     secret: str
     email: str
     password: str
-    role: str  # admin, faculty, student, hod
-    name: str = ""
-
-def _upsert_user(payload: CreateUserRequest, db: Session):
-    if payload.secret != SEED_SECRET:
-        raise HTTPException(status_code=403, detail="Invalid secret")
-    if payload.role not in ["admin", "faculty", "student", "hod"]:
-        raise HTTPException(status_code=400, detail="role must be one of: admin, faculty, student, hod")
-    hashed = pwd_context.hash(payload.password)
-    existing = db.query(models.User).filter(models.User.email == payload.email.lower()).first()
-    if existing:
-        existing.password_hash = hashed
-        existing.role = payload.role
-        db.commit()
-        return {"message": f"{payload.role.capitalize()} user {payload.email} updated", "action": "updated", "email": payload.email, "password": payload.password, "role": payload.role}
-    uid = str(uuid.uuid4())
-    user = models.User(id=uid, email=payload.email.lower(), password_hash=hashed, role=payload.role)
-    db.add(user)
-    db.commit()
-    return {"message": f"{payload.role.capitalize()} user {payload.email} created", "action": "created", "email": payload.email, "password": payload.password, "role": payload.role}
+    name: str = "Admin"
 
 @admin_router.post("/create-admin")
-def create_admin(payload: CreateUserRequest, db: Session = Depends(get_db)):
-    payload.role = "admin"
-    return _upsert_user(payload, db)
-
-@admin_router.post("/create-faculty")
-def create_faculty(payload: CreateUserRequest, db: Session = Depends(get_db)):
-    payload.role = "faculty"
-    return _upsert_user(payload, db)
-
-@admin_router.post("/create-user")
-def create_any_user(payload: CreateUserRequest, db: Session = Depends(get_db)):
-    return _upsert_user(payload, db)
+def create_admin(payload: CreateAdminRequest, db: Session = Depends(get_db)):
+    if payload.secret != SEED_SECRET:
+        raise HTTPException(status_code=403, detail="Invalid secret")
+    existing = db.query(models.User).filter(models.User.email == payload.email.lower()).first()
+    hashed = pwd_context.hash(payload.password)
+    if existing:
+        # Update password and ensure role is admin
+        existing.password_hash = hashed
+        existing.role = "admin"
+        db.commit()
+        return {"message": f"Admin user {payload.email} updated successfully", "action": "updated"}
+    uid = str(uuid.uuid4())
+    user = models.User(
+        id=uid,
+        email=payload.email.lower(),
+        password_hash=hashed,
+        role="admin"
+    )
+    db.add(user)
+    db.commit()
+    return {"message": f"Admin user {payload.email} created successfully", "action": "created"}
 
 @seed_router.post("")
 def seed_students(payload: SeedRequest, db: Session = Depends(get_db)):
