@@ -1,12 +1,49 @@
-﻿[
+[
   {
-    "id": 1,
-    "totalFaculty": 375,
-    "byDesignation": { "professor": 95, "associateProfessor": 58, "assistantProfessor": 150, "instructors": 72 },
-    "phdQualified": 185,
-    "averageExperience": "15+ years",
-    "studentFacultyRatio": "3.27:1",
-    "certificationsInternational": true,
-    "source": "KSRCE Mandatory Disclosure 2025-26"
+    "facultyId": "FAC_HOD_CSEIOT",
+    "name": "Dr. R. Saravanakumar",
+    "email": "hod.cseiot@ksrce.ac.in",
+    "phone": "9944456200",
+    "designation": "Professor & Head",
+    "departmentId": "DEPT_CSEIOT",
+    "isHOD": true,
+    "isClassAdviser": false,
+    "menteeIds": []
+  },
+  {
+    "facultyId": "FAC_CA_CSEIOT",
+    "name": "Ms. K. Priya",
+    "email": "priya.k@ksrce.ac.in",
+    "phone": "9944456201",
+    "designation": "Assistant Professor",
+    "departmentId": "DEPT_CSEIOT",
+    "isHOD": false,
+    "isClassAdviser": true,
+    "adviserFor": {
+      "departmentId": "DEPT_CSEIOT",
+      "year": 2,
+      "section": "A"
+    },
+    "menteeIds": [
+      "STU_73152419001",
+      "STU_73152419002",
+      "STU_73152419003",
+      "STU_73152419004",
+      "STU_73152419005",
+      "STU_73152419006",
+      "STU_73152419007",
+      "STU_73152419008"
+    ]
+  },
+  {
+    "facultyId": "FAC_HOD_CSE",
+    "name": "Dr. M. Venkatesan",
+    "email": "hod.cse@ksrce.ac.in",
+    "phone": "9944456202",
+    "designation": "Professor & Head",
+    "departmentId": "DEPT_CSE",
+    "isHOD": true,
+    "isClassAdviser": false,
+    "menteeIds": []
   }
 ]
