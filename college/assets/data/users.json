@@ -339,5 +339,35 @@
     "password": "Vish9032@Ksrce",
     "departmentId": "DEPT_CSEIOT",
     "studentId": "STU_73152419032"
+  },
+  {
+    "id": "FAC_HOD_CSEIOT",
+    "role": "hod",
+    "portalRole": "hod",
+    "name": "Dr. R. Saravanakumar",
+    "email": "hod.cseiot@ksrce.ac.in",
+    "phone": "9944456200",
+    "password": "Faculty@123",
+    "departmentId": "DEPT_CSEIOT"
+  },
+  {
+    "id": "FAC_CA_CSEIOT",
+    "role": "faculty",
+    "portalRole": "faculty",
+    "name": "Ms. K. Priya",
+    "email": "priya.k@ksrce.ac.in",
+    "phone": "9944456201",
+    "password": "Faculty@123",
+    "departmentId": "DEPT_CSEIOT"
+  },
+  {
+    "id": "FAC_HOD_CSE",
+    "role": "hod",
+    "portalRole": "hod",
+    "name": "Dr. M. Venkatesan",
+    "email": "hod.cse@ksrce.ac.in",
+    "phone": "9944456202",
+    "password": "Faculty@123",
+    "departmentId": "DEPT_CSE"
   }
 ]
