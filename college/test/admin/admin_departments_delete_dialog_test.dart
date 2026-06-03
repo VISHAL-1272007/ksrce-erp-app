@@ -54,7 +54,7 @@ void main() {
 
     SharedPreferences.setMockInitialValues({
       'ksrce_erp_data': jsonEncode(seed),
-      'ksrce_erp_version': 3,
+      'ksrce_erp_version': 4,
     });
 
     final ds = DataService();
